@@ -28,11 +28,11 @@ def emotion_detector(text_to_analyze):
             emotions = response_json.get('emotions', {})
             
             # Extract required emotions and their scores
-            anger_score = emotions.get('anger', 0.0)
-            disgust_score = emotions.get('disgust', 0.0)
-            fear_score = emotions.get('fear', 0.0)
-            joy_score = emotions.get('joy', 0.0)
-            sadness_score = emotions.get('sadness', 0.0)
+            anger_score = emotions.get('anger', None)
+            disgust_score = emotions.get('disgust', None)
+            fear_score = emotions.get('fear', None)
+            joy_score = emotions.get('joy', None)
+            sadness_score = emotions.get('sadness', None)
             
             # Find the dominant emotion
             emotion_scores = {
@@ -55,14 +55,19 @@ def emotion_detector(text_to_analyze):
             }
             
             return output
+        elif response.status_code == 400:
+            # Handle blank entry error
+            return {
+                'anger': None,
+                'disgust': None,
+                'fear': None,
+                'joy': None,
+                'sadness': None,
+                'dominant_emotion': None
+            }
         else:
             print(f"Error: Emotion Detection request failed with status code {response.status_code}")
             return None
     except Exception as e:
         print(f"Error: An exception occurred - {e}")
         return None
-
-# Example usage
-text_to_analyze = "I am so happy I am doing this."
-result = emotion_detector(text_to_analyze)
-print(json.dumps(result, indent=4))  # Print formatted JSON output
